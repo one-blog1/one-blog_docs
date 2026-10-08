@@ -1,0 +1,35 @@
+# 릴리즈 노트 → GitHub Release (D-119)
+# releases/vX.Y.Z.md 파일을 main에 올리면 같은 이름의 태그와 Release를 이 저장소에 만든다.
+# 제목은 파일의 첫 줄(# 제목), 본문은 파일 전체. 이미 있는 Release는 건드리지 않는다.
+name: Release notes
+
+on:
+  push:
+    branches: [main]
+    paths: ['releases/v*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 릴리즈 노트마다 Release 만들기
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          for file in releases/v*.md; do
+            tag="$(basename "$file" .md)"
+            if gh release view "$tag" > /dev/null 2>&1; then
+              echo "이미 있음: $tag"
+              continue
+            fi
+            title="$(head -1 "$file" | sed 's/^#[[:space:]]*//')"
+            gh release create "$tag" --target "$GITHUB_SHA" --title "$title" --notes-file "$file"
+            echo "만듦: $tag ($title)"
+          done

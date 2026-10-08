@@ -9,6 +9,7 @@ One Blog의 요구사항과 기능 명세를 모은 저장소입니다. 소스 �
 | [docs/requirements](docs/requirements/README.md) | 요구사항 분석서 1~8장. 문서끼리 다르면 [8장 결정 기록](docs/requirements/08-decision-log.md)의 최신 결정이 우선합니다 |
 | [docs/roadmap.md](docs/roadmap.md) | 기능 로드맵(개발 순서) |
 | docs/*.pdf | 처음 받은 요구사항 분석서 원본 |
+| [releases](releases/README.md) | 버전별 릴리즈 노트와 블로그 공지 문구. main에 올리면 [Releases](https://github.com/one-blog1/one-blog_docs/releases)에 자동으로 올라감 |
 | [specs](specs) | 기능별 Spec Kit 결과물 (명세, 계획, 작업, 데이터 모델, API 계약, quickstart). 001~016 |
 
 ## 규칙
