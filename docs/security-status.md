@@ -8,8 +8,8 @@
 
 | 구분 | 항목 수 | 항목 |
 |---|---|---|
-| 구현 | 12 | SEC-01, 02, 03(계정 잠금), 05, 06, 07, 08, 09, 10, 11, 13, D-102 |
-| 미구현 | 6 | SEC-04(Secure 쿠키), SEC-03(IP 제한), SEC-12(HSTS), 8430 직접 접속 차단, 운영·개발 DB 분리, SEC-11 문서 정리 |
+| 구현 | 13 | SEC-01, 02, 03(계정 잠금), 04, 05, 06, 07, 08, 09, 10, 11, 13, D-102 |
+| 미구현 | 5 | SEC-03(IP 제한), SEC-12(HSTS), 8430 직접 접속 차단, 운영·개발 DB 분리, SEC-11 문서 정리 |
 
 ## 구현
 
@@ -18,6 +18,7 @@
 | SEC-01 | 비밀번호 bcrypt 저장 | `common/config/PasswordConfig.java` (`BCryptPasswordEncoder(10)`) | 전용 테스트 없음 |
 | SEC-02 | 비밀번호 8~15자, 영문·숫자·특수문자 | `member/SignupPolicy.java`, `SignupService`·`AccountService`·`PasswordResetService`에서 검사 | `SignupIntegrationTest` |
 | SEC-03 | 로그인 5번 실패 시 5분 잠금 (관리자 제외, D-105) | `auth/AuthService.java` | `AccountSecurityIntegrationTest` |
+| SEC-04 | 토큰 쿠키 HttpOnly·Secure, 로그인 유지 14일 / 30분 무활동 | `common/security/AuthCookies.java`, `auth/RefreshToken.java`. 운영은 GitHub Secrets `COOKIE_SECURE=true`. 2026-10-12 브라우저에서 HttpOnly·Secure 확인 | `LoginLogoutIntegrationTest`, `RememberMeIntegrationTest` |
 | SEC-05 | 재설정 인증번호 30분·1회·5번 틀리면 무효 | `account/PasswordResetService.java` | `AccountSecurityIntegrationTest` |
 | SEC-06 | XSS·SQL Injection 방지 | `common/text/MarkdownRenderer.java`(jsoup), 화면은 `post.js`·`notice.js` 본문만 `innerHTML`, SQL은 JPA | `PostIntegrationTest` |
 | SEC-07 | 블로그별 역할을 매 요청 서버가 확인 | `blog/BlogAccessService`, `BlogManageService.requireOwner`, `CategoryService.requireManager` 등 | `BlogAccessIntegrationTest` |
@@ -34,7 +35,6 @@
 
 | ID | 내용 | 지금 상태 | 남은 일 |
 |---|---|---|---|
-| SEC-04 | 토큰 쿠키 HttpOnly·Secure | HttpOnly는 적용, Secure는 빠짐(브라우저에서 확인). `COOKIE_SECURE` Secret이 없어 `false`로 배포됨 | GitHub Secrets에 `COOKIE_SECURE=true` → 재배포 → 다시 로그인해 Secure 확인 |
 | SEC-03 | 같은 IP 로그인 10분 30번 (D-80) | `FORWARD_HEADERS_STRATEGY`가 기본 `none`이라 nginx 뒤에서 모든 요청이 127.0.0.1로 보임. 제한이 사이트 전체에 하나로 걸림 | nginx에 `X-Forwarded-For`·`X-Forwarded-Proto` 확인 → `secrets.env`에 `FORWARD_HEADERS_STRATEGY=framework` → 재배포 |
 | SEC-12 | 보안 헤더 5종 | CSP·X-Frame-Options·nosniff·Referrer-Policy는 코드에 있음. HSTS는 앱이 요청을 https로 알아야 붙음 | SEC-03과 같은 설정으로 해결. 이후 `curl -sI --resolve one-blog.java21.net:443:127.0.0.1 https://one-blog.java21.net`로 5종 확인 |
 | - | 8430 직접 접속 차단 | 앱이 호스트 네트워크로 8430을 직접 엶. SEC-03 설정을 켜면 8430으로 IP를 속일 수 있음 | nginx `proxy_pass`가 127.0.0.1인지 확인 → `secrets.env`에 `SERVER_ADDRESS=127.0.0.1` (SEC-03과 함께) |
