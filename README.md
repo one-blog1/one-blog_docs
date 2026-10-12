@@ -11,7 +11,7 @@ One Blog의 요구사항과 기능 명세를 모은 저장소입니다. 소스 �
 | [docs/security-status.md](docs/security-status.md) | 보안 요구사항(SEC-01~13) 진행 현황: 구현 / 미구현 |
 | docs/*.pdf | 처음 받은 요구사항 분석서 원본 |
 | [releases](releases/README.md) | 버전별 릴리즈 노트와 블로그 공지 문구. main에 올리면 [Releases](https://github.com/one-blog1/one-blog_docs/releases)에 자동으로 올라감 |
-| [specs](specs) | 기능별 Spec Kit 결과물 (명세, 계획, 작업, 데이터 모델, API 계약, quickstart). 001~016 |
+| [specs](specs) | 기능별 Spec Kit 결과물 (명세, 계획, 작업, 데이터 모델, API 계약, quickstart). 001~017 |
 
 ## 규칙
 
