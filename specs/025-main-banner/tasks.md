@@ -7,4 +7,4 @@
 - [X] T005 관리자 화면 "배너" 탭 `admin-banners.js`
 - [X] T006 테스트 `BannerIntegrationTest`, `BannerAdminIntegrationTest`
 - [X] T007 Chromium으로 메인 두 탭·휴대폰·관리자 배너 탭 확인(가짜 API: 5초 넘김, 마우스 올리면 멈춤, 참여 신청 탭에서 숨김, 움직임 줄이기면 멈춤, 비었을 때 숨김), 로컬 MySQL 8.0으로 V21·정리 쿼리 확인
-- [ ] T008 CI `./gradlew test` 통과
+- [X] T008 CI `./gradlew test` 통과
