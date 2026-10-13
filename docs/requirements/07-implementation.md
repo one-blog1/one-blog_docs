@@ -27,6 +27,7 @@
 | 대댓글 | 1단계 + 답글 앞에 @닉네임 표시 | BRD-06 | D-78 |
 | 배포 | GitHub Actions: main push·merge → CI → Docker 이미지 → SSH로 서버에서 실행(포트 8430), 실패 시 바로 전 버전으로 | 4장 배포 자동화 | D-118 |
 | 배포 준비 | 실행 jar 하나(`one-blog.jar`), 서버·DB 시간대 Asia/Seoul 고정, 상태 확인 `/api/health`, GitHub Actions CI(테스트·jar 실행·Docker 실행), Dockerfile. 절차는 [배포 안내](https://github.com/one-blog1/one_blog/blob/main/DEPLOY.md) | SEC-10, 4장 무중단 배포 | D-117 |
+| 무중단 배포 | 블루-그린: 8430 nginx 컨테이너 → 8431·8432 번갈아, 상태 확인 뒤 nginx reload로 전환. DB 변경은 옛·새 버전이 함께 돌 수 있게(추가 먼저, 삭제는 다음 배포) | 4장 무중단 배포 | D-135 |
 
 > **팀 결정: 정적 HTML + JS** (D-66, 잠시 정했던 전부 Thymeleaf(D-63)에서 변경)
 >
