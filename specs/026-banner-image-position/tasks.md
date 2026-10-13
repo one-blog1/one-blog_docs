@@ -5,4 +5,4 @@
 - [X] T003 화면: `banner-preview.js`, `admin-banners.js`, `banner-carousel.js`, `app.css`
 - [X] T004 테스트 `BannerIntegrationTest` 위치 저장·기본값·범위
 - [X] T005 Chromium으로 미리보기·끌기·막대·휴대폰 폭 확인(가짜 API)
-- [ ] T006 CI 통과, 버전 그대로 다시 배포(Deploy 수동 실행)
+- [X] T006 CI 통과, 버전 그대로 다시 배포(Deploy 수동 실행, `3977b8f`). 처음 CI는 위치 칸 매핑(TINYINT) 문제로 jar 시작 확인에서 실패해 고침
