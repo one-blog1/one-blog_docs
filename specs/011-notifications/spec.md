@@ -1,6 +1,6 @@
 # Feature Specification: 알림
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "011 알림 (SOC-04, 3.6, D-72). 지금까지 만든 기능(참여 003, 댓글·좋아요 006, 공지·관리자 삭제 007, 팔로우·구독 009)의 알림 자리를 잇는다"
 

@@ -1,6 +1,6 @@
 # Feature Specification: 메인 공지 개선 (수정·종류·목록·돌아가는 공지 줄)
 
-**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Implemented (v0.12)
 
 **Input**: "관리자 화면에서 공지 수정할 수 있도록 공지 탭에서 삭제 왼쪽에 수정 버튼도 만들고 수정 기능 만들어줘", "공지 클릭 시 공지 내역 볼 수 있고 공지도 세분화 해줘 업데이트, 수정 등으로. 그리고 메인에서 공지 UI를 옆으로 나열하는 게 아니라 2초 있으면 다음 공지 타이틀로 넘어가고 이런 형식"
 

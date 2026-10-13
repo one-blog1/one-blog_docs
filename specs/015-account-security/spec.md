@@ -1,6 +1,6 @@
 # Feature Specification: 계정 보안 세부 (로그인 잠금·사람 확인·IP 제한·비밀번호/이메일 찾기·보안 헤더)
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "015 계정 보안 세부: 로그인 잠금·CAPTCHA·IP 제한·비밀번호/이메일 찾기 (SEC-03, 05, 13, USR-06, 08, D-80)". 보안 헤더(SEC-12)도 함께 마무리한다.
 

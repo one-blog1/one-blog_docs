@@ -1,6 +1,6 @@
 # Feature Specification: 개인정보 처리방침·이용약관 화면
 
-**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Implemented (v0.11)
 
 **Input**: "개인정보 처리방침·이용약관 양식을 만들고 html로 구현, 체크 안 하면 가입 화면에서 안 넘어가게"
 

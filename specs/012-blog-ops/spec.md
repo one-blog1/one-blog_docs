@@ -1,6 +1,6 @@
 # Feature Specification: 블로그 운영 (정보 수정·부블로그장·위임·폐쇄·블로그 탈퇴), 회원탈퇴, 04:00 배치
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "012 블로그 운영: 부블로그장·위임·폐쇄·블로그 탈퇴, 회원탈퇴, 04:00 배치 (BLG-07~09, USR-05, 2장, 4.5, D-83)". 로드맵 "번호 없는 남은 일"의 블로그 정보 수정(BLG-01 수정, 2장)도 같은 관리 화면이라 여기서 한다.
 

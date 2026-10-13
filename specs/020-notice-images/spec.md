@@ -1,6 +1,6 @@
 # Feature Specification: 메인 공지에 사진 넣기
 
-**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Implemented (v0.14)
 
 **Input**: "관리자가 공지에 이미지를 등록할 수 있게"
 

@@ -1,6 +1,6 @@
 # Feature Specification: 제재·블랙리스트·신고·차단, 관리자 신고 처리·블로그장 제재·강제 폐쇄
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "013 제재·블랙리스트·신고·차단, 관리자 신고 처리·블로그장 제재·강제 폐쇄 (BLG-11~13, SOC-05, 06, ADM-02(강제 폐쇄), 04, 07, 3.7)"
 

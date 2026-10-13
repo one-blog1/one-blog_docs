@@ -1,6 +1,6 @@
 # Feature Specification: 공유·조회수
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "014 공유·조회수 (BRD-07, BRD-11, 6.2)"
 

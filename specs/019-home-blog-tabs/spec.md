@@ -1,6 +1,6 @@
 # Feature Specification: 내 블로그 새 글 블로그별 보기, 읽은 글 표시, 하트 좋아요
 
-**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-12 | **Status**: Implemented (v0.14)
 
 **Input**: "내 블로그의 새 글에서 (피드의 최신 글·인기 글처럼) 블로그를 고르면 해당 블로그의 새 글이 뜨게 / 읽은 글이 목록에 다시 있으면 글씨가 회색이 되는 등 읽었다는 걸 알 수 있게"
 

@@ -7,7 +7,7 @@
 | 로그인 방식 | JWT + HttpOnly 쿠키, "로그인 유지" 체크박스, Refresh Token은 DB에 저장 | SEC-04 | D-53, D-61, D-62, D-82 |
 | 보안 프레임워크 | Spring Security (보안 헤더, CSRF 토큰, 인증·인가) | SEC-10~12 | D-09 |
 | 비밀번호 암호화 | bcrypt | SEC-01 | D-81 |
-| 매크로 방지 | 계정별 잠금 + IP별 요청 제한 | SEC-03 | D-80 |
+| 매크로 방지 | 계정별 잠금(5번 실패 시 5분) + IP별 요청 제한(로그인은 같은 IP 10분에 30번) | SEC-03 | D-80 |
 | 사람 확인 (CAPTCHA) | Cloudflare Turnstile | SEC-13 | D-79 |
 | XSS 걸러내는 위치 | 서버 (jsoup) | SEC-06 | D-64 |
 | 화면 방식 | 정적 HTML + JS (글 상세의 og 태그만 서버가 채움) | SEC-10, BRD-07 | D-66 |
@@ -22,12 +22,15 @@
 | 메인 피드 | 볼 때마다 모아오기, 팔로우·구독은 탭 나누기 | BRD-09 | D-73, D-65 |
 | 에디터 | Toast UI Editor (마크다운) | BRD-01 | D-74 |
 | 이미지 저장 | 서버 디스크(1차), 이중화 때 S3 | BRD-05, SCL-02 | D-75 |
+| 소셜 로그인 | Spring Security OAuth2 Client(카카오·네이버·구글, 키가 있는 사이트만), 사이트 토큰은 저장하지 않음 | USR-09 | D-126 |
 | 목록 넘기기 | 번호 페이지 | BRD-02 | D-76 |
 | 조회수 | DB 조회 기록 테이블 | BRD-11 | D-77 |
 | 대댓글 | 1단계 + 답글 앞에 @닉네임 표시 | BRD-06 | D-78 |
-| 배포 | GitHub Actions: main push·merge → CI → Docker 이미지 → SSH로 서버에서 실행(포트 8430), 실패 시 바로 전 버전으로 | 4장 배포 자동화 | D-118 |
-| 배포 준비 | 실행 jar 하나(`one-blog.jar`), 서버·DB 시간대 Asia/Seoul 고정, 상태 확인 `/api/health`, GitHub Actions CI(테스트·jar 실행·Docker 실행), Dockerfile. 절차는 [배포 안내](https://github.com/one-blog1/one_blog/blob/main/DEPLOY.md) | SEC-10, 4장 무중단 배포 | D-117 |
-| 무중단 배포 | 블루-그린: 8430 nginx 컨테이너 → 8431·8432 번갈아, 상태 확인 뒤 nginx reload로 전환. DB 변경은 옛·새 버전이 함께 돌 수 있게(추가 먼저, 삭제는 다음 배포) | 4장 무중단 배포 | D-135 |
+| 배포 | GitHub Actions: `build.gradle.kts`의 version을 올려 main에 반영했을 때만 CI → Docker 이미지 → SSH로 서버에서 실행. 버전이 그대로인 push는 CI만. 버전 그대로 다시 배포는 Actions → Deploy → Run workflow. 배포에 성공하면 Actions가 코드 저장소에 태그 `v버전`을 자동으로 붙임 | 4장 배포 자동화 | D-118, D-120 |
+| 버전 규칙 | 배포할 때마다 0.01씩 올림(점 뒤 두 자리, 0.21 → 0.22). 릴리즈 노트는 문서 저장소 `releases/`, 사용자 공지는 관리자가 메인 공지로 올림. 버전은 사용자가 정할 때만 올림 | 7장 배포 | D-119, D-121 |
+| 브랜치·개발 흐름 | 기능 하나를 스펙 단위로(Spec Kit specify → plan → tasks → implement, 단계마다 사용자 확인). `feature/<영어 기능이름>` → 확인 후 `develop`에 merge → 버전을 올릴 때 `develop`을 `main`에 merge해 배포. 운영 버그는 `hotfix/<이름>`을 main에서 만들어 main·develop 둘 다에 merge. CI는 main·develop·feature/**·hotfix/**에서, 배포는 main에서만. push·merge는 사용자 확인 뒤 | 전체 | D-136, D-137 |
+| 배포 준비 | 실행 jar 하나(`one-blog.jar`), 서버·DB 시간대 Asia/Seoul 고정, 상태 확인 `/api/health`(지금 버전도 알려 줌), GitHub Actions CI(테스트·jar 실행·Docker 실행), Dockerfile, DB 변경은 Flyway 마이그레이션(앱은 `ddl-auto: validate`). 절차는 [배포 안내](https://github.com/one-blog1/one_blog/blob/main/DEPLOY.md) | SEC-10, 4장 무중단 배포 | D-117, D-99 |
+| 무중단 배포 | 블루-그린: 8430은 nginx 프록시 컨테이너, 앱은 블루(8431)·그린(8432)을 번갈아 씀. 쉬는 쪽에 새 버전 → `/api/health` 확인 → nginx reload로 전환 → 옛 컨테이너 정상 종료(30초까지). 새 버전이 상태 확인에 실패하면 새 것만 실패 처리하고 지금 버전이 그대로 요청을 받음. DB 변경은 옛·새 버전이 함께 돌 수 있게(추가 먼저, 삭제는 다음 배포) | 4장 무중단 배포 | D-135 |
 
 > **팀 결정: 정적 HTML + JS** (D-66, 잠시 정했던 전부 Thymeleaf(D-63)에서 변경)
 >

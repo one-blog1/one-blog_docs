@@ -1,6 +1,6 @@
 # Feature Specification: 메인 관리자 1차
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "007 메인 관리자 1차: 관리자 로그인(D-98), 회원·블로그 조회(ADM-01, 02), 글·댓글 숨김·삭제(ADM-03), 공지(BRD-10), 통계(ADM-05), 활동 기록(ADM-06, SEC-09). 신고 처리·블로그장 제재·강제 폐쇄는 013"
 

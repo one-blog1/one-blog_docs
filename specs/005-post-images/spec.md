@@ -1,6 +1,6 @@
 # Feature Specification: 이미지 첨부·에디터
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "005 이미지 첨부·에디터 (BRD-05, 6.3, D-74, D-75). 글쓰기에 Toast UI Editor(마크다운)를 붙이고, 이미지를 붙이면 바로 올려 본문에 넣는다. 장당 3MB, 글 하나에 10장, 형식은 002의 업로드 검사를 그대로. 목록 썸네일은 첫 이미지. files.post_id 외래 키 추가"
 

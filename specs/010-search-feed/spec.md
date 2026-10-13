@@ -1,6 +1,6 @@
 # Feature Specification: 통합 검색·메인 피드·블로그 검색
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "010 통합 검색·메인 피드·블로그 검색 (BRD-08, BRD-09, BLG-03, 6.1, D-73)"
 

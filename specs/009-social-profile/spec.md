@@ -1,6 +1,6 @@
 # Feature Specification: 팔로우·블로그 구독·프로필·회원정보 수정
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "009 팔로우·블로그 구독·프로필·회원정보 수정 (SOC-01~03, USR-07, D-02, D-50)"
 

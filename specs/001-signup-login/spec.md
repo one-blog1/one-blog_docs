@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-07
 
-**Status**: Draft
+**Status**: Implemented (v0.10)
 
 **Input**: User description: "001 회원가입·로그인·로그아웃 (USR-01, USR-02, USR-03, USR-04, SEC-01, SEC-02, SEC-04). 이메일 인증 → 비밀번호 → 이름·닉네임·전화번호 순서의 회원가입, 이메일·비밀번호 로그인, '로그인 유지' 체크박스, 로그아웃을 만든다. 후속 작업으로 미룸: 로그인 잠금(SEC-03), CAPTCHA(SEC-13), IP 요청 제한(D-80), 관리자 login_id 로그인(D-98), 비밀번호 찾기·이메일 찾기(USR-06, USR-08)"
 

@@ -1,6 +1,6 @@
 # Feature Specification: 카테고리·태그
 
-**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Draft
+**Feature Branch**: `main` | **Created**: 2026-10-07 | **Status**: Implemented (v0.10)
 
 **Input**: "008 카테고리·태그: 블로그별 카테고리 관리와 카테고리별 글 보기(BRD-03), 글 태그와 같은 태그의 글 보기(BRD-04, 6.4)"
 
