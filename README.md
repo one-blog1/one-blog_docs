@@ -12,7 +12,7 @@ One Blog의 요구사항과 기능 명세를 모은 저장소입니다. 소스 �
 | docs/*.pdf | 처음 받은 요구사항 분석서 원본 |
 | [releases](releases/README.md) | 버전별 릴리즈 노트와 블로그 공지 문구. main에 올리면 [Releases](https://github.com/one-blog1/one-blog_docs/releases)에 자동으로 올라감 |
 | [assets/screenshots](assets/screenshots) | 서비스 소개용 화면 캡처. `main-live.png`는 실제 운영 화면, 나머지는 예시 데이터로 찍은 것. 조직 소개(one-blog1/.github)에서 씀 |
-| [specs](specs) | 기능별 Spec Kit 결과물 (명세, 계획, 작업, 데이터 모델, API 계약, quickstart). 001~020 |
+| [specs](specs) | 기능별 Spec Kit 결과물 (명세, 계획, 작업, 데이터 모델, API 계약, quickstart). 001~029 |
 
 ## 규칙
 
