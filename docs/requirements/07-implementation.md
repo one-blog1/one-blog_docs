@@ -30,6 +30,7 @@
 | 버전 규칙 | 배포할 때마다 0.01씩 올림(점 뒤 두 자리, 0.21 → 0.22). 릴리즈 노트는 문서 저장소 `releases/`, 사용자 공지는 관리자가 메인 공지로 올림. 버전은 사용자가 정할 때만 올림 | 7장 배포 | D-119, D-121 |
 | 브랜치·개발 흐름 | 기능 하나를 스펙 단위로(Spec Kit specify → plan → tasks → implement, 단계마다 사용자 확인). `feature/<영어 기능이름>` → 확인 후 `develop`에 merge → 버전을 올릴 때 `develop`을 `main`에 merge해 배포. 운영 버그는 `hotfix/<이름>`을 main에서 만들어 main·develop 둘 다에 merge. CI는 main·develop·feature/**·hotfix/**에서, 배포는 main에서만. push·merge는 사용자 확인 뒤 | 전체 | D-136, D-137 |
 | 배포 준비 | 실행 jar 하나(`one-blog.jar`), 서버·DB 시간대 Asia/Seoul 고정, 상태 확인 `/api/health`(지금 버전도 알려 줌), GitHub Actions CI(테스트·jar 실행·Docker 실행), Dockerfile, DB 변경은 Flyway 마이그레이션(앱은 `ddl-auto: validate`). 절차는 [배포 안내](https://github.com/one-blog1/one_blog/blob/main/DEPLOY.md) | SEC-10, 4장 무중단 배포 | D-117, D-99 |
+| CI 단계·정적 분석 | 1단계 `unit`(feature·hotfix push와 PR, DB 없는 단위 테스트 + 커버리지, PR merge 필수 검사) → 2단계 `full`(develop·main push, 전체 테스트 + 커버리지 + SonarQube 품질 게이트 + jar·Docker 실행 확인). SonarQube는 받은 Community 서버(`http://s4.java21.net:9000`, 프로젝트 `one-blog`)라 PR 분석 없이 merge 뒤 게이트를 보고, 실패하면 CI 실패 → main이면 배포 안 됨. 테스트 이름 `...IntegrationTest` = DB 필요. 배포는 전환 직후 운영 확인(smoke-check), 실패하면 프록시를 옛 버전으로 자동 되돌림. 스테이징·카나리 없음 | 4장 배포 자동화, 4장 무중단 배포 | D-140 |
 | 무중단 배포 | 블루-그린: 8430은 nginx 프록시 컨테이너, 앱은 블루(8431)·그린(8432)을 번갈아 씀. 쉬는 쪽에 새 버전 → `/api/health` 확인 → nginx reload로 전환 → 옛 컨테이너 정상 종료(30초까지). 새 버전이 상태 확인에 실패하면 새 것만 실패 처리하고 지금 버전이 그대로 요청을 받음. DB 변경은 옛·새 버전이 함께 돌 수 있게(추가 먼저, 삭제는 다음 배포) | 4장 무중단 배포 | D-135 |
 
 > **팀 결정: 정적 HTML + JS** (D-66, 잠시 정했던 전부 Thymeleaf(D-63)에서 변경)
