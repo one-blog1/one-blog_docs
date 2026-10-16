@@ -9,7 +9,7 @@
 | 구분 | 항목 수 | 항목 |
 |---|---|---|
 | 구현 | 19 | SEC-01, 02, 03(계정 잠금), 04, 05, 06, 07, 08, 09, 10, 11, 12(HSTS 빼고), 13, D-102, 글 안 영상(D-125), 소셜 로그인(D-126), 썸네일 받기(D-128), 배너 링크(6.8), 무중단 배포(D-135) |
-| 미구현 | 4 | SEC-03(같은 IP 제한), SEC-12(HSTS), 앱 포트 직접 접속 막기, 운영·개발 DB 분리 |
+| 미구현 | 4 | SEC-03(요청 제한 기록 앱 간 공유), SEC-12(운영 헤더 확인), 앱 포트 직접 접속 막기, 운영·개발 DB 분리(개발 DB 발급, 로컬 전환 중) |
 
 ## 구현
 
@@ -43,10 +43,10 @@
 
 | ID | 내용 | 지금 상태 | 남은 일 |
 |---|---|---|---|
-| SEC-03 | 같은 IP 로그인 10분 30번 (D-80) | 코드는 있음(`AuthService.LOGIN_PER_IP`). 운영은 `FORWARD_HEADERS_STRATEGY`가 기본 `none`이고 `deploy.yml`도 넘기지 않음. 앱은 모든 요청을 프록시 주소(127.0.0.1)로 봐서 제한이 사이트 전체에 하나로 걸림. 프록시는 `X-Forwarded-For`·`X-Forwarded-Proto`를 넘기지만 앱이 읽지 않음 | 아래 "앱 포트 직접 접속 막기"를 먼저 → `secrets.env`에 `FORWARD_HEADERS_STRATEGY=framework` → 재배포 |
-| SEC-12 | HSTS | Spring Security 기본값은 HTTPS 요청에만 HSTS를 붙임. 앱이 요청을 http로 보므로 붙지 않음. 나머지 4종(CSP·X-Frame-Options·nosniff·Referrer-Policy)은 구현 | SEC-03과 같은 설정으로 해결. 이후 운영 응답 헤더로 5종 확인 |
-| - | 앱 포트 직접 접속 막기 | D-135 구조에서 프록시(8430)와 앱(8431·8432)이 모두 호스트 네트워크로 열림. 프록시는 `listen 8430`(주소 지정 없음), 앱은 `SERVER_ADDRESS`가 없어 모든 주소에서 받음. 프록시는 들어온 `X-Forwarded-Proto`를 그대로 넘기고 `X-Forwarded-For`에 이어 붙임. SEC-03 설정을 켠 뒤 이 포트들에 바로 닿을 수 있으면 접속 IP·https 여부를 속일 수 있음 | 바깥에서 8430~8432로 바로 닿는지 확인 → 앱은 `secrets.env`에 `SERVER_ADDRESS=127.0.0.1`(프록시가 `127.0.0.1:<포트>`로 보내므로 그대로 동작) → 프록시는 바깥 nginx 위치에 맞춰 `listen 127.0.0.1:8430`으로(`deploy.sh` 수정) |
-| - | 운영·개발 DB 분리 | 확인 전. `DEPLOY.md`에 "로컬과 같은 DB를 쓰는 동안"이라는 안내가 있고, 0.17 노트에 로컬 서버를 운영 DB에 연결하는 경우가 적혀 있음 | 서버 `deploy.env`의 `DB_HOST`·`DB_NAME`을 로컬 `.env`와 비교 → 같으면 운영용 DB 발급 후 Secrets 교체 |
+| SEC-03 | 같은 IP 로그인 10분 30번 (D-80) | 접속 IP 읽기는 해결: 0.19부터 `deploy.yml`이 `FORWARD_HEADERS_STRATEGY=native`를 넣어 앱이 바깥 프록시의 `X-Forwarded-For`를 읽음(`native`는 신뢰 프록시 127.0.0.1이 붙인 헤더만 믿어, 앱 포트로 바로 와서 IP를 속일 수 없음). 남은 것: 요청 제한 기록이 앱 메모리(`RateLimiter`)라 운영 앱 2개가 따로 셈 → 제한이 최대 2배로 느슨함(029에서 발견, SCL-01) | 요청 제한 기록을 DB로 옮겨 앱끼리 공유 (다음 스펙) |
+| SEC-12 | HSTS | `native` 설정으로 앱이 https 요청을 알아봐서 HSTS가 붙어야 함(0.19). 운영 응답 헤더로 아직 확인하지 않음 | 운영 응답 헤더 5종(HSTS·CSP·X-Frame-Options·nosniff·Referrer-Policy) 확인 |
+| - | 앱 포트 직접 접속 막기 | D-135 구조에서 프록시(8430)와 앱(8431·8432)이 모두 호스트 네트워크로 열림. 프록시는 `listen 8430`(주소 지정 없음), 앱은 `SERVER_ADDRESS`가 없어 모든 주소에서 받음. 프록시는 들어온 `X-Forwarded-Proto`를 그대로 넘기고 `X-Forwarded-For`에 이어 붙임. `native`라 앱 포트(8431·8432)로 바로 와서 IP를 속이는 것은 막히지만, 프록시(8430)에 바로 닿으면 바깥 nginx(https·제한)를 건너뛰고 `X-Forwarded-Proto`를 속일 수 있음 | 바깥에서 8430~8432로 바로 닿는지 확인 → 앱은 `secrets.env`에 `SERVER_ADDRESS=127.0.0.1`(프록시가 `127.0.0.1:<포트>`로 보내므로 그대로 동작) → 프록시는 바깥 nginx 위치에 맞춰 `listen 127.0.0.1:8430`으로(`deploy.sh` 수정) |
+| - | 운영·개발 DB 분리 | 2026-10-16 확인: 로컬이 운영 DB(Crowfoot `cf_u36_d1`)와 같은 계정을 쓰고 있었음. 로컬에서 기능 브랜치를 띄우면 Flyway가 운영 DB에 새 마이그레이션을 먼저 적용할 수 있음. 개발용 DB(Crowfoot MySQL #2, `cf_u36_d2`)를 발급함 | 로컬 `.env`를 `cf_u36_d2` 접속 정보로 바꾸기(사용자) → 운영 DB 계정 비밀번호 바꾸고 GitHub Secrets `DB_PASSWORD` 갱신 → `DEPLOY.md`의 "로컬과 같은 DB" 안내 고치기 |
 
 ### 재배포 메모
 
