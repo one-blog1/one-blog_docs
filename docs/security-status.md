@@ -8,8 +8,8 @@
 
 | 구분 | 항목 수 | 항목 |
 |---|---|---|
-| 구현 | 19 | SEC-01, 02, 03(계정 잠금), 04, 05, 06, 07, 08, 09, 10, 11, 12(HSTS 빼고), 13, D-102, 글 안 영상(D-125), 소셜 로그인(D-126), 썸네일 받기(D-128), 배너 링크(6.8), 무중단 배포(D-135) |
-| 미구현 | 4 | SEC-03(요청 제한 기록 앱 간 공유), SEC-12(운영 헤더 확인), 앱 포트 직접 접속 막기, 운영·개발 DB 분리(개발 DB 발급, 로컬 전환 중) |
+| 구현 | 21 | SEC-01, 02, 03(계정 잠금·같은 IP 제한 공유 D-143), 04, 05, 06, 07, 08, 09, 10, 11, 12(HSTS 빼고), 13, D-102, 글 안 영상(D-125), 소셜 로그인(D-126), 썸네일 받기(D-128), 배너 링크(6.8), 무중단 배포(D-135), 운영·개발 DB 분리(2026-10-16) |
+| 미구현 | 2 | SEC-12(운영 헤더 확인), 앱 포트 직접 접속 막기 |
 
 ## 구현
 
@@ -20,6 +20,7 @@
 | SEC-01 | 비밀번호 bcrypt 저장 | `common/config/PasswordConfig.java` (`BCryptPasswordEncoder(10)`) | 전용 테스트 없음 |
 | SEC-02 | 비밀번호 8~15자, 영문·숫자·특수문자 | `member/SignupPolicy.java`, `SignupService`·`AccountService`·`PasswordResetService`에서 검사 | `SignupIntegrationTest` |
 | SEC-03 | 로그인 5번 실패 시 5분 잠금, 관리자 제외(D-105) | `auth/AuthService.java` (`MAX_LOGIN_FAILURES`, `LOCK_DURATION`) | `AccountSecurityIntegrationTest` |
+| SEC-03 | 같은 IP 로그인 10분 30번(D-80). 운영 앱 2개가 같은 기록으로 셈(D-143), 접속 IP는 프록시 헤더(`FORWARD_HEADERS_STRATEGY=native`) | `common/security/RateLimiter.java`(DB `rate_limit_hits`, 대상 HMAC), `CleanupTask` | `RateLimiterIntegrationTest` |
 | SEC-04 | 토큰 쿠키 HttpOnly·Secure, 로그인 유지 14일 / 30분 무활동 | `common/security/AuthCookies.java`, `auth/RefreshToken.java`. 운영은 GitHub Secrets `COOKIE_SECURE=true`(`deploy.yml`이 넘김) | `LoginLogoutIntegrationTest`, `RememberMeIntegrationTest` |
 | SEC-05 | 재설정 인증번호 30분·1회·5번 틀리면 무효 | `account/PasswordResetService.java` | `AccountSecurityIntegrationTest` |
 | SEC-06 | XSS·SQL Injection 방지 | `common/text/MarkdownRenderer.java`(jsoup). 화면은 글·공지 본문만 `innerHTML`(`js/pages/post/post.js`, `js/pages/notice.js`), 약관 전문은 DOMParser(`js/pages/signup.js`). SQL은 JPA와 이름 붙인 파라미터 | `PostIntegrationTest` |
@@ -43,10 +44,8 @@
 
 | ID | 내용 | 지금 상태 | 남은 일 |
 |---|---|---|---|
-| SEC-03 | 같은 IP 로그인 10분 30번 (D-80) | 접속 IP 읽기는 해결: 0.19부터 `deploy.yml`이 `FORWARD_HEADERS_STRATEGY=native`를 넣어 앱이 바깥 프록시의 `X-Forwarded-For`를 읽음(`native`는 신뢰 프록시 127.0.0.1이 붙인 헤더만 믿어, 앱 포트로 바로 와서 IP를 속일 수 없음). 남은 것: 요청 제한 기록이 앱 메모리(`RateLimiter`)라 운영 앱 2개가 따로 셈 → 제한이 최대 2배로 느슨함(029에서 발견, SCL-01) | 요청 제한 기록을 DB로 옮겨 앱끼리 공유 (다음 스펙) |
 | SEC-12 | HSTS | `native` 설정으로 앱이 https 요청을 알아봐서 HSTS가 붙어야 함(0.19). 운영 응답 헤더로 아직 확인하지 않음 | 운영 응답 헤더 5종(HSTS·CSP·X-Frame-Options·nosniff·Referrer-Policy) 확인 |
 | - | 앱 포트 직접 접속 막기 | D-135 구조에서 프록시(8430)와 앱(8431·8432)이 모두 호스트 네트워크로 열림. 프록시는 `listen 8430`(주소 지정 없음), 앱은 `SERVER_ADDRESS`가 없어 모든 주소에서 받음. 프록시는 들어온 `X-Forwarded-Proto`를 그대로 넘기고 `X-Forwarded-For`에 이어 붙임. `native`라 앱 포트(8431·8432)로 바로 와서 IP를 속이는 것은 막히지만, 프록시(8430)에 바로 닿으면 바깥 nginx(https·제한)를 건너뛰고 `X-Forwarded-Proto`를 속일 수 있음 | 바깥에서 8430~8432로 바로 닿는지 확인 → 앱은 `secrets.env`에 `SERVER_ADDRESS=127.0.0.1`(프록시가 `127.0.0.1:<포트>`로 보내므로 그대로 동작) → 프록시는 바깥 nginx 위치에 맞춰 `listen 127.0.0.1:8430`으로(`deploy.sh` 수정) |
-| - | 운영·개발 DB 분리 | 2026-10-16 확인: 로컬이 운영 DB(Crowfoot `cf_u36_d1`)와 같은 계정을 쓰고 있었음. 로컬에서 기능 브랜치를 띄우면 Flyway가 운영 DB에 새 마이그레이션을 먼저 적용할 수 있음. 개발용 DB(Crowfoot MySQL #2, `cf_u36_d2`)를 발급함 | 로컬 `.env`를 `cf_u36_d2` 접속 정보로 바꾸기(사용자) → 운영 DB 계정 비밀번호 바꾸고 GitHub Secrets `DB_PASSWORD` 갱신 → `DEPLOY.md`의 "로컬과 같은 DB" 안내 고치기 |
 
 ### 재배포 메모
 
